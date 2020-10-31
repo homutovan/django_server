@@ -4,7 +4,7 @@ file_patch = 'raw_lessions.json'
 
 def parser(file_patch):
 
-    with open(file_patch, encoding='utf8') as file:
+    with open(file_patch, encoding='utf-8') as file:
         json_data = json.load(file)
         
     return json_data
@@ -22,8 +22,7 @@ if __name__ == "__main__":
             'date': lession['date'],
             'time': lession['time'],
             } 
-        for lession in json_data 
-        if lession.get('id', 0)]
+        for lession in json_data if lession.get('id', 0)]
 
-    with open('lessions.json', 'w', encoding='utf8') as file:
-        json.dumps(lessions, file)
+    with open('lessions.json', 'w', encoding='utf-8') as file:
+        json.dump(lessions, file)
