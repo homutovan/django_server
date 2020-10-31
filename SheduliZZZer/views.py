@@ -1,4 +1,4 @@
-
+from datetime import datetime
 from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,10 +10,18 @@ from main.settings import STATICFILES_DIRS, BASE_DIR
 
 
 class GetData(APIView):
+    """Получает данные из файла и выводит их по урлу"""
     def get(self, request):
         file_patch = STATICFILES_DIRS[0] + '/data_lessons.json'
         with open(file_patch, encoding='utf-8') as file:
             json_data = json.load(file)
+
+
+        try:
+            end_date = datetime.strptime(request.GET.get('end_date'), '%Y-%m-%d')
+            start_date = datetime.strptime(request.GET.get('start_date'), '%Y-%m-%d')
+        except TypeError:
+            return Response({'lessions': json_data, 'success': 'true'})
 
         lessions = [
             {
@@ -24,6 +32,7 @@ class GetData(APIView):
                 'date': lession['date'],
                 'time': lession['time'],
             }
-            for lession in json_data if lession.get('id', 0)]
+            for lession in json_data if (lession.get('id') and datetime.strptime(lession['date'], '%Y-%m-%d') >= \
+            start_date) and (datetime.strptime(lession['date'], '%Y-%m-%d') <= end_date)]
 
-        return Response({'lessions': lessions})
+        return Response({'lessions': lessions, 'success': 'true'})
