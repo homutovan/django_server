@@ -29,6 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
+    'shedulizzzer.azurewebsites.net',
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
