@@ -11,7 +11,7 @@ from .sheduler_API import Sheduler
 from main.settings import STATIC_ROOT, BASE_DIR
 
 
-class GetData(APIView):
+class GetEvents(APIView):
     """Получает данные из файла и выводит их по урлу"""
     def get(self, request):
         file_patch = STATIC_ROOT + '/data_events.json'
@@ -23,29 +23,40 @@ class GetData(APIView):
             start_date = datetime.strptime(request.GET.get('start_date'), '%Y-%m-%d')
         except TypeError:
             return Response({
-                'lessions': json_data, 
+                'events': json_data, 
                 'success': 'true',
                 })
 
-        lessions = [
+        events = [
             {
-                'id': lession['id'],
-                'group': lession['group'],
-                'teacher': lession['teacher'],
-                'lecture': lession['lecture'],
-                'date': lession['date'],
-                'time': lession['time'],
+                'id': event['id'],
+                'group': event['group'],
+                'expert': event['teacher'],
+                'lecture': event['lecture'],
+                'date': event['date'],
+                'time': event['time'],
             }
-            for lession in json_data 
-            if (lession.get('id') 
-                and datetime.strptime(lession['date'], '%Y-%m-%d') >= start_date) 
-                and (datetime.strptime(lession['date'], '%Y-%m-%d') <= end_date)]
+            for event in json_data 
+            if (event.get('id') 
+                and datetime.strptime(event['date'], '%Y-%m-%d') >= start_date) 
+                and (datetime.strptime(event['date'], '%Y-%m-%d') <= end_date)]
 
         return Response({
-            'lessions': lessions, 
+            'events': events, 
             'success': 'true',
             })
-    
+        
+class GetExperts(APIView):
+    """Получает данные из файла и выводит их по урлу"""
+    def get(self, request):
+        file_patch = STATIC_ROOT + '/data_experts.json'
+        with open(file_patch, encoding='utf-8') as file:
+            json_data = json.load(file)
+
+        return Response({
+            'experts': json_data, 
+            'success': 'true',
+            })
 
 class UpdateEvents(APIView):
     def get(self, request):
