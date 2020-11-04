@@ -46,6 +46,20 @@ class GetEvents(APIView):
             'success': 'true',
             })
         
+class GetGroups(APIView):
+    """Получает данные из файла и выводит их по урлу"""
+    def get(self, request):
+        file_patch = STATIC_ROOT + '/data_events.json'
+        with open(file_patch, encoding='utf-8') as file:
+            json_data = json.load(file)
+
+        groups = set([event['group'] for event in json_data if not event['group'] == 'unknown'])
+
+        return Response({
+            'groups': [{'name': group} for group in groups], 
+            'success': 'true',
+            })
+        
 class GetExperts(APIView):
     """Получает данные из файла и выводит их по урлу"""
     def get(self, request):
@@ -55,6 +69,18 @@ class GetExperts(APIView):
 
         return Response({
             'experts': json_data, 
+            'success': 'true',
+            })
+        
+class GetDefault(APIView):
+    """Получает данные из файла и выводит их по урлу"""
+    def get(self, request):
+        file_patch = STATIC_ROOT + '/data_default_lessons.json'
+        with open(file_patch, encoding='utf-8') as file:
+            json_data = json.load(file)
+
+        return Response({
+            'default': json_data, 
             'success': 'true',
             })
 
